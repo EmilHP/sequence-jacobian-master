@@ -19,8 +19,9 @@ def household(Vd_p, Vb_p, Pi_e_p, b_grid, dg_grid, k_grid, e_grid, sigma_N, sigm
     P_n_p = P_n/P
     P_d_p = P_d/P
     tau_a = 0
+    tau_e = 0
     lump = (1 + tau_a*(b_grid[np.newaxis,:]/1-1) + tau_e*(e_grid[:,np.newaxis] - 1))*Div
-    z_grid = (W/P_n) * e_grid * N
+    z_grid = (W/P) * e_grid * N
     zzz = z_grid[:, np.newaxis, np.newaxis]
     lll = lump[:,:, np.newaxis]
     bbb = b_grid[np.newaxis, :, np.newaxis]

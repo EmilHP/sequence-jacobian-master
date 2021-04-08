@@ -28,18 +28,18 @@ def household(Vd_p, Vb_p, Pi_e_p, b_grid, dg_grid, k_grid, e_grid, sigma_N, sigm
     ddd = dg_grid[np.newaxis, np.newaxis, :]
 
     # b. pre-compute RHS of combined F.O.C. optimality condition
-    rhs = P_d_p + alpha*((dg_grid[:, np.newaxis]/dg_grid[np.newaxis, :]) - (1-delta)) # P_d/P + partial Psi/partial d'
+    rhs = P_d_p + alpha*((dg_grid[:, np.newaxis]/dg_grid[np.newaxis, :]) - 1) # P_d/P + partial Psi/partial d'
 
     # c. compute time step 
-    Vb,Vd,dg,b,c,c_d = time_iteration(sigma_N,sigma_D,alpha,delta,r,lump,beta,Pi_e_p,dg_grid,z_grid,b_grid,k_grid,zzz,lll,bbb,ddd,
+    Vb,Vd,dg,b,c = time_iteration(sigma_N,sigma_D,alpha,delta,r,lump,beta,Pi_e_p,dg_grid,z_grid,b_grid,k_grid,zzz,lll,bbb,ddd,
                    Ne,Nb,Nd,Nk,rhs,Vb_p,Vd_p,P_n_p,P_d_p)
 
-    return Vb, Vd, b, dg, c, c_d
+    return Vb, Vd, b, dg, c
 
 @njit(fastmath=True) 
 def Psi_fun(alpha,delta,dp,d):
     ''' durable adjustment cost function '''
-    return 0.5*alpha*((dp-(1-delta)*d)/d)**2*d
+    return 0.5*alpha*(dp/d - 1)**2*d
 
 @njit(fastmath=True,parallel=True)
 def solve_unconstrained(sigma_N,alpha,delta,r,d_grid,b_grid,
@@ -218,7 +218,6 @@ def time_iteration(sigma_N,sigma_D,alpha,delta,r,lump,beta,Pi_e,d_grid,z_grid,b_
 
     # d. collect policy functions d',b',c by combining unconstrained and constrained solutions
     d, b, c = collect_policy(delta,alpha,r,Ne,Nb,Nd,b_grid,zzz,lll,ddd,bbb,d_unc,b_unc,d_con,P_n_p,P_d_p)
-    c_d = d - (1-delta)*ddd # durable investment policy fuctions
 
     # e. update Vb, Vd
     # i. compute marginal utilities
@@ -227,6 +226,6 @@ def time_iteration(sigma_N,sigma_D,alpha,delta,r,lump,beta,Pi_e,d_grid,z_grid,b_
     ud = (ddd)**(-1/sigma_D)
     # ii. compute Vb, Vd using envelope conditions
     Vb = (1/P_n_p)*(1 + r) * uc
-    Vd = ud + (1/P_n_p)*uc * (P_d_p*(1-delta) - 0.5*alpha*((1-delta)**2 - (d/ddd)**2))
+    Vd = ud + (1/P_n_p)*uc * (P_d_p*(1-delta) - 0.5*alpha*(((d-ddd)*(d+ddd))/(ddd**2)))
 
-    return Vb,Vd,d,b,c,c_d
+    return Vb,Vd,d,b,c

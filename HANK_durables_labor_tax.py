@@ -19,22 +19,22 @@ def household(Vd_p, Vb_p, Pi_e_p, b_grid, dg_grid, k_grid, e_grid, e_ergodic, si
     P_n_p = P_n/P
     P_d_p = P_d/P
     tau_a = 0
+    tau_e = 0
     lump = (1 + tau_a*(b_grid[np.newaxis,:]/1-1) + tau_e*(e_grid[:,np.newaxis] - 1))*Div
-    #if Tax is None: 
-    #    Tax = 0
-    #z_grid = (1-Tax)*(W/P) * e_grid * N
+    if Tax is None: 
+        Tax = 0
+    z_grid = (1-Tax)*(W/P) * e_grid * N
 
-    z_grid = (W/P) * e_grid * N
     zzz = z_grid[:, np.newaxis, np.newaxis]
     lll = lump[:,:, np.newaxis]
 
-    if Tax is None:
-        tax = 0
-    else:
-        tax = Tax / np.sum(e_ergodic * e_grid) * e_grid
-        tax_2d = tax[:,np.newaxis]
-        lump -= tax_2d
-        lll -= tax_2d[:,:, np.newaxis]
+    #if Tax is None:
+    #    tax = 0
+    #else:
+    #    tax = Tax / np.sum(e_ergodic * e_grid) * e_grid
+    #    tax_2d = tax[:,np.newaxis]
+    #    lump -= tax_2d
+    #    lll -= tax_2d[:,:,np.newaxis]
 
     bbb = b_grid[np.newaxis, :, np.newaxis]
     ddd = dg_grid[np.newaxis, np.newaxis, :]

@@ -112,7 +112,7 @@ class HetBlock:
         - attach_hetinput : make new HetBlock that first processes inputs through function hetinput
     '''
 
-    def ss(self, backward_tol=1E-8, backward_maxit=5000, forward_tol=1E-10, forward_maxit=100_000, **kwargs):
+    def ss(self, backward_tol=1E-6, backward_maxit=100, forward_tol=1E-8, forward_maxit=10_000, **kwargs):
         """Evaluate steady state HetBlock using keyword args for all inputs. Analog to SimpleBlock.ss.
 
         Parameters

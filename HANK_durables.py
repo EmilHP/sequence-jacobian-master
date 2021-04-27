@@ -42,7 +42,7 @@ def household(Vd_p, Vb_p, Pi_e_p, b_grid, dg_grid, k_grid, e_grid, e_ergodic, si
     ddd = dg_grid[np.newaxis, np.newaxis, :]
 
     # b. pre-compute RHS of combined F.O.C. optimality condition
-    rhs = P_d_p + alpha*((dg_grid[:, np.newaxis]/dg_grid[np.newaxis, :]) - (1-delta)) # P_d/P + partial Psi/partial d'
+    rhs = P_d_p +  alpha*((dg_grid[:, np.newaxis]/dg_grid[np.newaxis, :]) - (1-delta)) # P_d/P + partial Psi/partial d'
 
     # c. compute time step 
     Vb,Vd,dg,b,c,c_d = time_iteration(sigma_N,sigma_D,alpha,delta,r_grid,lump,beta,Pi_e_p,dg_grid,z_grid,b_grid,k_grid,zzz,lll,bbb,ddd,

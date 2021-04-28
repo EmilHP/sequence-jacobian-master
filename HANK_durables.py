@@ -48,7 +48,20 @@ def household(Vd_p, Vb_p, Pi_e_p, b_grid, dg_grid, k_grid, e_grid, e_ergodic, si
     Vb,Vd,dg,b,c,c_d = time_iteration(sigma_N,sigma_D,alpha,delta,r_grid,lump,beta,Pi_e_p,dg_grid,z_grid,b_grid,k_grid,zzz,lll,bbb,ddd,
                    Ne,Nb,Nd,Nk,rhs,Vb_p,Vd_p,P_n_p,P_d_p)
 
-    return Vb, Vd, b, dg, c, c_d
+    # d. liquidity constrained consumption
+    b_neg_index = len(b_grid[b_grid<0]) - 1
+    c_k = c.copy()
+    c_k[b>b_grid[b_neg_index]] = 0 
+    d_k = dg.copy()
+    d_k[b>b_grid[b_neg_index]] = 0 
+
+    # e. unconstrained consumption
+    c_u = c.copy()
+    c_u[b<=b_grid[b_neg_index]] = 0 
+    d_u = dg.copy()
+    d_u[b<=b_grid[b_neg_index]] = 0 
+
+    return Vb, Vd, b, dg, c, c_d, c_k, d_k, c_u, d_u
 
 @njit(fastmath=True) 
 def Psi_fun(alpha,delta,dp,d):
